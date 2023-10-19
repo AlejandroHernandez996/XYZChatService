@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Socket.io Test Client</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+</head>
+<body>
+    <h2>Socket.io Test Client</h2>
+
+    <button id="joinRoom">Join Room</button>
+    <input id="roomInput" type="text" placeholder="Enter room ID" value="room1">
+    <br><br>
+
+    <input id="messageInput" type="text" placeholder="Enter a message">
+    <button id="sendMessage">Send Message</button>
+
+    <h3>Received Messages:</h3>
+    <ul id="messageList"></ul>
+
+    <script>
+        const socket = io.connect('https://xyz-ue5.uc.r.appspot.com/');
+
+        document.getElementById('joinRoom').addEventListener('click', () => {
+            const roomId = document.getElementById('roomInput').value;
+            socket.emit('joinRoom', roomId);
+        });
+
+        document.getElementById('sendMessage').addEventListener('click', () => {
+            const LobbyId = document.getElementById('roomInput').value;
+            const MessageContent = document.getElementById('messageInput').value;
+            socket.emit('clientSendMessage', {LobbyId, MessageContent});
+        });
+
+        socket.on('serverSendMessage', (message) => {
+            const messageList = document.getElementById('messageList');
+            const li = document.createElement('li');
+            li.textContent = message;
+            messageList.appendChild(li);
+        });
+    </script>
+</body>
+</html>
